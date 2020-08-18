@@ -68,14 +68,12 @@ function vendorJs(cb) {
 }
 
 function vendorCss(cb) {
-    console.log('vendor-css');
     gulp.src(path.vendor.css)
         .pipe(sourcemaps.init())
         .pipe(concat('vendor.css'))
         .pipe(cssmin())
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest(path.build.css))
-        .on('error', concat.logError);
+        .pipe(gulp.dest(path.build.css));
     cb();
 }
 
@@ -85,10 +83,7 @@ function vendorFonts(cb) {
     cb();
 }
 
-exports.vendor = (cb) => {
-    gulp.parallel(vendorCss/*, vendorJs, vendorFonts*/);
-    cb();
-};
+exports.vendor = gulp.parallel(vendorCss/*, vendorJs, vendorFonts*/);
 
 function buildHtml(cb) {
     gulp.src(path.src.html) //Выберем файлы по нужному пути
@@ -150,14 +145,6 @@ exports.clean = function (cb) {
 };
 
 exports.build = gulp.parallel(buildHtml, buildJs, buildCss, buildFonts, buildImg, exports.vendor);
-
-exports.watch = function() {
-    gulp.watch('./**/*', {interval: 1000, mode: "poll"}, exports.build);
-    // gulp.watch([path.watch.style], buildCss);
-    // gulp.watch([path.watch.js], buildJs);
-    // gulp.watch([path.watch.img], buildImg);
-    // gulp.watch([path.watch.fonts], buildFonts);
-};
 
 exports.default = function(cb) {
     gulp.series(gulp.parallel(exports.bild, webserver)/*, watch*/);
